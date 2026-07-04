@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>24 Tower - 100 Levels of Math Puzzles</title>
+  <meta name="description" content="Embark on the 100-Level Tower Climb 24 Game! Combine 4 numbers using arithmetic to make exactly 24. Rise from easiest (ground floor) to hardest (summit).">
+  <!-- Google Fonts: Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="zone-1-theme">
+  <!-- Animated Background Particles -->
+  <div class="bg-glow" id="bg-glow"></div>
+  <div class="bg-particles" id="bg-particles"></div>
+
+  <div class="app-layout">
+    <!-- Left Sidebar: Tower Map (Desktop visible, mobile collapsible) -->
+    <aside class="tower-sidebar glass-panel" id="tower-sidebar">
+      <div class="sidebar-header">
+        <h2 data-en="The 24 Tower" data-th="หอคอย 24">The 24 Tower</h2>
+        <span class="climb-stats" id="climb-stats">0 / 100</span>
+      </div>
+      <!-- Tower map climbs UP (so scroll container starts at bottom, levels go from 100 down to 1) -->
+      <div class="tower-map-container" id="tower-map">
+        <!-- Javascript will inject 100 level buttons here in reverse order -->
+      </div>
+    </aside>
+
+    <!-- Right Area: Main Game Interface -->
+    <div class="main-content">
+      <!-- Header -->
+      <header class="app-header">
+        <div class="brand">
+          <h1 class="logo-text">24 <span class="accent-text">Tower</span></h1>
+          <p class="subtitle" data-en="Climb 100 levels from bottom to summit" data-th="ไต่หอคอย 100 ด่านจากล่างขึ้นบน"></p>
+        </div>
+        <div class="header-controls">
+          <button id="toggle-map-btn" class="icon-btn mobile-only" aria-label="Toggle Tower Map" title="Toggle Tower Map">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M15,21H9V3H15V21M11,19H13V5H11V19M19,3H17V21H19V3M21,3H23V21H21V3M5,3H3V21H5V3M7,3H9V21H7V3Z"/></svg>
+          </button>
+          <button id="sound-btn" class="icon-btn" aria-label="Toggle Sound" title="Toggle Sound">
+            <svg class="icon sound-on-icon" viewBox="0 0 24 24"><path d="M14,3.23V5.29C16.89,6.15 19,8.83 19,12C19,15.17 16.89,17.85 14,18.71V20.77C18,19.86 21,16.28 21,12C21,7.72 18,4.14 14,3.23M16.5,12C16.5,10.23 15.5,8.71 14,7.97V16C15.5,15.29 16.5,13.77 16.5,12M3,9V15H7L12,20V4L7,9H3Z"/></svg>
+            <svg class="icon sound-off-icon hidden" viewBox="0 0 24 24"><path d="M12,4L9.91,6.09L12,8.18V4M4.27,3L3,4.27L7.73,9H3V15H7L12,20V13.27L16.25,17.53C15.58,18.04 14.83,18.43 14,18.7V20.76C15.38,20.45 16.63,19.79 17.69,18.9L20.73,21.94L22,20.67L4.27,3M19,12C19,12.78 18.87,13.5 18.66,14.21L20.21,15.76C20.72,14.61 21,13.34 21,12C21,7.72 18,4.14 14,3.23V5.29C16.89,6.15 19,8.83 19,12M16.5,12C16.5,11.23 16.24,10.5 15.82,9.92L14,8.1V12.18L16.14,14.32C16.37,13.6 16.5,12.82 16.5,12Z"/></svg>
+          </button>
+          <button id="lang-btn" class="lang-btn" title="Switch Language">TH</button>
+        </div>
+      </header>
+
+      <!-- Active Level Zone Header (Dynamic color based on Zone theme) -->
+      <section class="zone-banner glass-panel">
+        <div class="zone-indicator">
+          <span class="level-badge" id="level-badge">Lvl 1</span>
+          <div class="zone-meta">
+            <h2 id="zone-title" data-en="Zone 1: The Training Grounds" data-th="โซน 1: ลานฝึกหัด">Zone 1: The Training Grounds</h2>
+            <p id="zone-difficulty" data-en="Easiest levels - Integer calculations only" data-th="ระดับเริ่มต้น - มีแต่เลขลงตัว"></p>
+          </div>
+        </div>
+        <div class="zone-progress-container">
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="progress-fill" style="width: 0%;"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Main Game Board -->
+      <main class="game-board">
+        <!-- Tile Grid (The 4 numbers or merged results) -->
+        <div class="tiles-area" id="tiles-area">
+          <!-- Dynamically injected -->
+        </div>
+
+        <!-- Interactive Calculator Operations -->
+        <div class="operator-controls-wrapper">
+          <div class="operators-grid" id="operators-grid">
+            <button class="op-btn" data-op="+" aria-label="Add">+</button>
+            <button class="op-btn" data-op="-" aria-label="Subtract">−</button>
+            <button class="op-btn" data-op="*" aria-label="Multiply">×</button>
+            <button class="op-btn" data-op="/" aria-label="Divide">÷</button>
+          </div>
+        </div>
+
+        <!-- Merge Formula Tracker -->
+        <div class="formula-tracker-container">
+          <div class="formula-tracker-bubble glass-panel">
+            <span class="formula-hint-text" id="formula-display" data-en="Select a tile to start" data-th="เลือกการ์ดตัวเลขเพื่อเริ่มต้น">Select a tile to start</span>
+          </div>
+        </div>
+
+        <!-- Action Panel -->
+        <div class="actions-panel">
+          <button id="undo-btn" class="action-btn secondary-btn" disabled>
+            <svg class="btn-icon" viewBox="0 0 24 24"><path d="M12.5,8C9.85,8 7.45,9 5.6,10.6L2,7V16H11L7.38,12.38C8.77,11.22 10.54,10.5 12.5,10.5C16.04,10.5 19.05,12.81 20.1,16L22.47,15.22C21.08,11.08 17.14,8 12.5,8Z"/></svg>
+            <span data-en="Undo" data-th="ย้อนกลับ">Undo</span>
+          </button>
+          <button id="reset-btn" class="action-btn secondary-btn" disabled>
+            <svg class="btn-icon" viewBox="0 0 24 24"><path d="M17.65,6.35C16.2,4.9 14.21,4 12,4A8,8 0 0,0 4,12A8,8 0 0,0 12,20C15.73,20 18.84,17.45 19.73,14H17.65C16.83,16.33 14.61,18 12,18A6,6 0 0,1 6,12A6,6 0 0,1 12,6C13.66,6 15.14,6.69 16.22,7.78L13,11H20V4L17.65,6.35Z"/></svg>
+            <span data-en="Reset" data-th="รีเซ็ต">Reset</span>
+          </button>
+          <button id="skip-btn" class="action-btn secondary-btn">
+            <svg class="btn-icon" viewBox="0 0 24 24"><path d="M6,18L14.5,12L6,6V18M8,9.86L12.03,12L8,14.14V9.86M16,6H18V18H16V6Z"/></svg>
+            <span data-en="Skip Level" data-th="ข้ามด่าน">Skip Level</span>
+          </button>
+        </div>
+
+        <!-- Help buttons -->
+        <div class="solver-controls">
+          <button id="hint-btn" class="action-btn primary-btn glow-purple">
+            <svg class="btn-icon" viewBox="0 0 24 24"><path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,17A1.5,1.5 0 1,1 13.5,15.5A1.5,1.5 0 0,1 12,17M12,13A1,1 0 0,1 11,12V9A1,1 0 0,1 13,9V12A1,1 0 0,1 12,13Z"/></svg>
+            <span data-en="Need Help?" data-th="ต้องการคำใบ้?">Need Help?</span>
+          </button>
+          <button id="solutions-btn" class="action-btn primary-btn glow-blue">
+            <svg class="btn-icon" viewBox="0 0 24 24"><path d="M12,3A9,9 0 0,0 3,12A9,9 0 0,0 12,21A9,9 0 0,0 21,12A9,9 0 0,0 12,3M12,19A7,7 0 0,1 5,12A7,7 0 0,1 12,5A7,7 0 0,1 19,12A7,7 0 0,1 12,19M11,7H13V9H11V7M11,11H13V17H11V11Z"/></svg>
+            <span data-en="All Solutions" data-th="ดูเฉลยทั้งหมด">All Solutions</span>
+          </button>
+        </div>
+      </main>
+
+      <!-- Drawer Overlay for Solutions -->
+      <div id="solutions-drawer" class="solutions-drawer hidden">
+        <div class="drawer-overlay" id="drawer-close-overlay"></div>
+        <div class="drawer-content glass-panel">
+          <div class="drawer-header">
+            <h3 data-en="Available Solutions" data-th="วิธีการแก้สมการที่เป็นไปได้">Available Solutions</h3>
+            <button id="close-drawer-btn" class="close-btn">&times;</button>
+          </div>
+          <div class="drawer-body">
+            <p class="solutions-count-text" id="solutions-count"></p>
+            <div class="solutions-list" id="solutions-list">
+              <!-- Injected dynamically -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- How to Play Section -->
+      <section class="instructions-section glass-panel">
+        <h3 data-en="Tower Rules" data-th="กฎแห่งหอคอย">Tower Rules</h3>
+        <ul>
+          <li data-en="Select a card, select an operator (+, -, *, /), then select another card to merge them." data-th="เลือกการ์ดตัวเลข เลือกเครื่องหมายคำนวณ แล้วเลือกการ์ดอีกใบเพื่อคำนวณรวมกัน"></li>
+          <li data-en="Climb 100 levels. Lower floors are easy; upper levels are extremely difficult." data-th="ไต่หอคอยทั้งหมด 100 ชั้น ด่านล่างๆ จะง่าย และด่านสูงๆ ขึ้นไปจะยากทวีคูณ"></li>
+          <li data-en="All progress is saved. If you get stuck, click 'Need Help?' to reveal a hint." data-th="ระบบบันทึกด่านที่คุณเล่นผ่านให้อัตโนมัติ หากคิดไม่ออกสามารถกดปุ่มคำใบ้ได้"></li>
+          <li data-en="You can skip levels if they are too challenging, but the true goal is to conquer all 100!" data-th="คุณสามารถกดข้ามด่านที่ยากเกินไปได้ แต่เป้าหมายที่แท้จริงคือการพิชิตครบทั้ง 100 ด่าน!"></li>
+        </ul>
+      </section>
+
+      <!-- Level Success Splash Screen -->
+      <div id="success-screen" class="success-screen hidden">
+        <div class="success-content glass-panel bounce-in">
+          <div class="success-icon-wrapper">
+            <svg class="success-check-icon" viewBox="0 0 24 24"><path d="M9,16.17L4.83,12L3.41,13.41L9,19L21,7L19.59,5.59L9,16.17Z"/></svg>
+          </div>
+          <h2 id="success-header" data-en="Floor Cleared!" data-th="ผ่านด่านสำเร็จ!">Floor Cleared!</h2>
+          <p class="final-formula" id="success-formula"></p>
+
+          <button id="next-level-btn" class="action-btn primary-btn glow-green">
+            <span data-en="Ascend Tower" data-th="ขึ้นหอคอยชั้นต่อไป">Ascend Tower</span>
+            <svg class="btn-icon-right" viewBox="0 0 24 24"><path d="M4,11H16.17L10.58,5.41L12,4L20,12L12,20L10.58,18.59L16.17,13H4V11Z"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="credits">
+    <p>&copy; 2026 24 Tower | Powered by Antigravity</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
